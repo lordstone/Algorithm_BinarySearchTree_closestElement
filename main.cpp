@@ -22,6 +22,39 @@ public:
         return mynum;
     }
 
+    static vector<int> findClosestKValue(int n, int k, TreeNode * root){
+        vector<int> res;
+        if(root == NULL) return res;
+        queue<int> myQ;
+        stack<TreeNode*> mystk;
+        while(!mystk.empty() || root != NULL){
+            while(root){
+                mystk.push(root);
+                root = root -> left;
+            }
+            if(!mystk.empty()){
+                root = mystk.top();
+                mystk.pop();
+                if(myQ.size() < k){
+                    myQ.push(root -> val);
+                }else{
+                    if(abs(n - root -> val) < abs( n - myQ.front())){
+                        myQ.pop();
+                        myQ.push(root -> val);
+                    }else{
+                        break;
+                    }
+                }
+                root = root -> right;
+            }
+        }
+        while(!myQ.empty()){
+            res.push_back(myQ.front());
+            myQ.pop();
+        }
+        return res;
+    }
+
     static vector<TreeNode*> generateBSTs(){
         vector<TreeNode*> testCases;
         TreeNode * case1 = new TreeNode(50);
@@ -31,7 +64,6 @@ public:
         case1 -> right -> left = new TreeNode (60);
         case1 -> left -> left = new TreeNode (10);
         case1 -> right -> right = new TreeNode (90);
-
         testCases.push_back(case1);
         return testCases;
     }
@@ -48,6 +80,16 @@ int main(){
         cout << binarySearchTree::findClosestBSTValue(60,i) << endl;
         cout << binarySearchTree::findClosestBSTValue(59,i) << endl;
         cout << binarySearchTree::findClosestBSTValue(89,i) << endl;
+        cout << "=========================" << endl;
+        vector<int> resCase1 = binarySearchTree::findClosestKValue(44,3,i);
+        for(auto &i : resCase1){
+            cout << i << " ";
+        }
+        cout << endl;
+        vector<int> resCase2 = binarySearchTree::findClosestKValue(88,5,i);
+        for(auto &i : resCase2){
+            cout << i << " ";
+        }
+        cout << endl;
     }
     return 0;
-}
